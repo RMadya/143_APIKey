@@ -21,3 +21,7 @@ db.connect((err) => {
     console.log('✅ Koneksi DB sukses');
   }
 });
+
+app.use(express.json());
+app.use(express.static('public'));
+
