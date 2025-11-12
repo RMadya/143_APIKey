@@ -25,3 +25,25 @@ db.connect((err) => {
 app.use(express.json());
 app.use(express.static('public'));
 
+// 🧩 Buat API key baru
+app.post('/create', (req, res) => {
+  try {
+    const random = crypto.randomBytes(32).toString('base64url');
+    const apiKey = `sk-itumy-v1-${random}`;
+
+    const sql = 'INSERT INTO token (token) VALUES (?)';
+    db.query(sql, [apiKey], (err, result) => {
+      if (err) {
+        console.error('❌ Error query:', err);
+        return res.status(500).json({ message: 'Gagal menyimpan API key' });
+      }
+
+      console.log('✅ API key berhasil dibuat:', apiKey);
+      res.json({ apiKey }); // kirim ke client
+    });
+  } catch (error) {
+    console.error('❌ Error generate key:', error);
+    res.status(500).json({ message: 'Gagal membuat API key' });
+  }
+});
+
